@@ -1,0 +1,23 @@
+
+float dailyProfit =na
+if tradingWindow //only trade between 12:30am and 11:30pm
+    
+    //Long block of trades
+    if close < firstBuySignal
+        strategy.entry("Long", strategy.long)
+        
+    if close < secondBuySignal
+        strategy.entry("Long", strategy.long)
+            
+    if close > sellSignal
+        strategy.close("Long",qty_percent = exitSweepStrength, comment = "$" + str.tostring((close - strategy.position_avg_price) * strategy.position_size) )
+        dailyProfit := dailyProfit + (close - strategy.position_avg_price) * strategy.position_size
+
+
+if hour(time) == 23 and minute(time) == 45
+    strategy.close_all("End of Day " + "$" + str.tostring((close - strategy.position_avg_price) * strategy.position_size))
+    dailyProfit := dailyProfit + (close - strategy.position_avg_price) * strategy.position_size
+    
+if hour(time) == 0
+    label.new(bar_index, low, text="Daily Profit: " + str.tostring(dailyProfit))
+    
