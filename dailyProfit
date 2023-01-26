@@ -9,20 +9,24 @@ if loopCheck
 	//Long block of trades
 		if close < firstBuySignal
 			strategy.entry("Long", strategy.long)
-		
+	   //stopLoss	strategy.exit("Exit Long", from_entry="Long", stop=close * 0.975, comment_loss = str.tostring((close - strategy.position_avg_price) * strategy.position_size))
+			//I'm not sure how to get the gain or loss from these exit trades to add to dailyProfit
+			
 		if close < scondBuySignal
 			strategy.entry("Long", strategy.long)
+	  //stopLoss	strategy.exit("Exit Long", from_entry="Long", stop=close * 0.975, comment_loss = str.tostring((close - strategy.position_avg_price) * strategy.position_size))
 			
 		if close > sellSignal
 			strategy.close("Long",qty_percent = exitSweepStrength, comment = "$" + str.tostring((close - strategy.position_avg_price) * strategy.position_size) )
-			dailyProfit := dailyProfit + (close - strategy.position_avg_price) * strategy.position_size //I'm not sure why this doesn't the new profit onto the existing value
+			dailyProfit += strategy.closedtrades.profit(strategy.closedtrades-1) //Using closedtrades.profit will return negative if the trade was a loss
 
 
 	if hour(time) == 23 and minute(time) == 45
 		strategy.close_all("End of Day " + "$" + str.tostring((close - strategy.position_avg_price) * strategy.position_size))
-		dailyProfit :=(close - strategy.position_avg_price) * strategy.position_size //this will only give dailyProfit witht he most recent profit
+		dailyProfit += strategy.closedtrades.profit(strategy.closedtrades-1) 
 	
 	if hour(time) == 23 and minute == 57
 		label.new(bar_index, low, text="Daily Profit: " + str.tostring(dailyProfit))
-		loopCheck :=false
+		dailyProfit:=0 //Reset profit counter
+		loopCheck :=false //reset the loop
     
