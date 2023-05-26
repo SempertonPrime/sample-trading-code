@@ -13,9 +13,6 @@ if tradingWindow and upperVolatilityCheck and ta.barssince(tradeWaiter)>10
 		if close > upperBuySignal1 and close <upperBuySignal2
 			strategy.close("Long")
 			tradeWaiter:=true
-      
-		if close > upperBuySignal2 and close < upperBuySignal3
-			alert(syminfo.ticker +" is above the upper 2nd StDev.", freq =alert.freq_once_per_bar)
 
 		if close > upperBuySignal3
 			strategy.close("Long", qty_percent = 50, immediately = true, comment = "50% closed")
